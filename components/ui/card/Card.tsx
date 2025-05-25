@@ -1,11 +1,24 @@
+import ModalConfirm from '@/components/shared/modalConfirm/ModalConfirm';
 import { Person } from '@/interface/types';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-export default function Card({ age, gender, id, lastName, name, phone }: Person) {
+interface CardProps extends Person {
+  onRefresh?: () => void;
+}
+
+export default function Card({ age, gender, id, lastName, name, phone, onRefresh }: CardProps) {
   const router = useRouter();
+  const [open, setOpen] = useState<{
+    id: string;
+    open: boolean;
+  }>({
+    id: '',
+    open: false,
+  });
 
   return (
     <View className="flex w-full flex-col gap-y-4 rounded-lg bg-white p-4 shadow-md">
@@ -54,12 +67,25 @@ export default function Card({ age, gender, id, lastName, name, phone }: Person)
         <Pressable
           className="flex flex-row gap-x-2 rounded-xl border px-4 py-2"
           onPress={() => {
-            console.log('eliminar');
+            setOpen({
+              id: id.toString(),
+              open: true,
+            });
           }}>
           <Feather name="trash-2" size={24} color="#dc2626" />
           <Text className="text-lg text-red-600">Eliminar</Text>
         </Pressable>
       </View>
+
+      {open.open && (
+        <ModalConfirm
+          id={open.id}
+          onClose={() => {
+            setOpen({ id: '', open: false });
+            onRefresh?.();
+          }}
+        />
+      )}
     </View>
   );
 }
