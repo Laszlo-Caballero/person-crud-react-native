@@ -16,7 +16,7 @@ export default function Layout({ children }: PropsWithChildren) {
           paddingRight: insets.right,
         },
       ]}
-      className="flex-1">
+      className="relative flex-1">
       <View
         className="flex w-full items-center justify-center bg-blue-500"
         style={[
